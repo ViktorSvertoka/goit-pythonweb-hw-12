@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: db_password
+      POSTGRES_DB: contacts_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  app:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: 'postgresql+asyncpg://postgres:db_password@postgres:5432/contacts_db'
+    ports:
+      - '8000:8000'
+    networks:
+      - app_network
+
+volumes:
+  postgres-data:
+
+networks:
+  app_network:
+    driver: bridge

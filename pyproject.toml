@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "goit-pythonweb-hw-08"
+version = "0.1.0"
+description = ""
+authors = ["ViktorSvertoka <115661003+ViktorSvertoka@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+asyncpg = "^0.30.0"
+sqlalchemy = "^2.0"
+alembic = "^1.14.0"
+greenlet = "^3.1.1"
+fastapi = "^0.115.6"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+libgravatar = "^1.0.4"
+python-dotenv = "^1.0.1"
+slowapi = "^0.1.9"
+redis = "^5.2.1"
+redis-lru = "^0.1.2"
+fastapi-mail = "^1.4.2"
+pydantic = "^2.10.3"
+pydantic-settings = "^2.7.0"
+cloudinary = "^1.41.0"
+psycopg2-binary = "^2.9.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
