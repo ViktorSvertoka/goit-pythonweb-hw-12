@@ -1,3 +1,4 @@
+from enum import Enum
 from sqlalchemy import (
     Integer,
     String,
@@ -7,12 +8,19 @@ from sqlalchemy import (
     Column,
     ForeignKey,
     func,
+    Enum as SqlEnum,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 
 Base = declarative_base()
+
+
+class UserRole(str, Enum):
+
+    USER = "user"
+    ADMIN = "admin"
 
 
 class Contact(Base):
@@ -35,6 +43,7 @@ class Contact(Base):
 
 class User(Base):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True)
     email = Column(String, unique=True)
@@ -42,3 +51,4 @@ class User(Base):
     created_at = Column(DateTime, default=func.now())
     avatar = Column(String(255), nullable=True)
     confirmed = Column(Boolean, default=False)
+    role = Column(SqlEnum(UserRole), default=UserRole.USER, nullable=False)
