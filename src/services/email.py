@@ -2,7 +2,6 @@ from pathlib import Path
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from fastapi_mail.errors import ConnectionErrors
 from pydantic import EmailStr
-
 from src.services.auth import create_email_token
 from src.conf.config import settings
 
@@ -21,7 +20,7 @@ conf = ConnectionConfig(
 )
 
 
-async def send_email(email: EmailStr, username: str, host: str):
+async def send_email(email: EmailStr, username: str, host: str) -> None:
     try:
         token_verification = create_email_token({"sub": email})
         message = MessageSchema(
@@ -37,5 +36,25 @@ async def send_email(email: EmailStr, username: str, host: str):
 
         fm = FastMail(conf)
         await fm.send_message(message, template_name="verify_email.html")
+    except ConnectionErrors as err:
+        print(err)
+
+
+async def send_reset_password_email(
+    to_email: EmailStr, username: str, host: str, reset_token: str
+) -> None:
+
+    try:
+        reset_link = f"{host}api/auth/confirm_reset_password/{reset_token}"
+
+        message = MessageSchema(
+            subject="Important: Update your account information",
+            recipients=[to_email],
+            template_body={"reset_link": reset_link, "username": username},
+            subtype=MessageType.html,
+        )
+
+        fm = FastMail(conf)
+        await fm.send_message(message, template_name="reset_password.html")
     except ConnectionErrors as err:
         print(err)
