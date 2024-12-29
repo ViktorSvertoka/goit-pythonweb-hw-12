@@ -25,6 +25,7 @@ aiosqlite = "^0.20.0"
 pytest-cov = "^6.0.0"
 aiocache = "^0.12.3"
 aioredis = "^2.0.1"
+greenlet = "^2.0.2"
 
 
 [tool.poetry.group.dev.dependencies]

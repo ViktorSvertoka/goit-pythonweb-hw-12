@@ -20,12 +20,12 @@ conf = ConnectionConfig(
 )
 
 
-async def send_email(email: EmailStr, username: str, host: str) -> None:
+async def send_confirm_email(to_email: EmailStr, username: str, host: str) -> None:
     try:
-        token_verification = create_email_token({"sub": email})
+        token_verification = create_email_token({"sub": to_email})
         message = MessageSchema(
             subject="Confirm your email",
-            recipients=[email],
+            recipients=[to_email],
             template_body={
                 "host": host,
                 "username": username,
