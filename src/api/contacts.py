@@ -10,12 +10,23 @@ from src.services.contacts import ContactService
 router = APIRouter(prefix="/contacts", tags=["contacts"])
 
 
-@router.get("/birthdays", response_model=list[ContactResponse])
+@router.get("/birthdays", response_model=List[ContactResponse])
 async def get_upcoming_birthdays(
     days: int = Query(default=7, ge=1),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    """
+    Отримання списку контактів, які мають день народження протягом вказаної кількості днів.
+
+    Параметри:
+    - days (int): Кількість днів для пошуку (мінімум 1).
+    - db (AsyncSession): Сесія бази даних.
+    - user (User): Поточний авторизований користувач.
+
+    Повертає:
+    - List[ContactResponse]: Список контактів із найближчими днями народження.
+    """
     contact_service = ContactService(db)
     return await contact_service.get_upcoming_birthdays(days, user)
 
@@ -30,6 +41,21 @@ async def get_contacts(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    """
+    Пошук контактів за фільтрами.
+
+    Параметри:
+    - name (str): Ім'я контакту (необов'язкове).
+    - surname (str): Прізвище контакту (необов'язкове).
+    - email (str): Email контакту (необов'язкове).
+    - skip (int): Кількість записів, які потрібно пропустити (за замовчуванням 0).
+    - limit (int): Максимальна кількість записів, які потрібно повернути (за замовчуванням 100).
+    - db (AsyncSession): Сесія бази даних.
+    - user (User): Поточний авторизований користувач.
+
+    Повертає:
+    - List[ContactResponse]: Список контактів, які відповідають критеріям пошуку.
+    """
     contact_service = ContactService(db)
     contacts = await contact_service.get_contacts(
         name, surname, email, skip, limit, user
@@ -43,9 +69,22 @@ async def get_contact(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    """
+    Отримання інформації про контакт за його ID.
+
+    Параметри:
+    - contact_id (int): ID контакту.
+    - db (AsyncSession): Сесія бази даних.
+    - user (User): Поточний авторизований користувач.
+
+    Повертає:
+    - ContactResponse: Дані контакту.
+
+    Викликає:
+    - HTTPException (404): Якщо контакт не знайдено.
+    """
     contact_service = ContactService(db)
     contact = await contact_service.get_contact(contact_id, user)
-    print(contact)
     if contact is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Contact not found"
@@ -59,6 +98,17 @@ async def create_contact(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    """
+    Створення нового контакту.
+
+    Параметри:
+    - body (ContactModel): Дані нового контакту.
+    - db (AsyncSession): Сесія бази даних.
+    - user (User): Поточний авторизований користувач.
+
+    Повертає:
+    - ContactResponse: Дані створеного контакту.
+    """
     contact_service = ContactService(db)
     return await contact_service.create_contact(body, user)
 
@@ -70,6 +120,21 @@ async def update_contact(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    """
+    Оновлення даних контакту за його ID.
+
+    Параметри:
+    - body (ContactModel): Нові дані контакту.
+    - contact_id (int): ID контакту.
+    - db (AsyncSession): Сесія бази даних.
+    - user (User): Поточний авторизований користувач.
+
+    Повертає:
+    - ContactResponse: Оновлені дані контакту.
+
+    Викликає:
+    - HTTPException (404): Якщо контакт не знайдено.
+    """
     contact_service = ContactService(db)
     contact = await contact_service.update_contact(contact_id, body, user)
     if contact is None:
@@ -85,6 +150,20 @@ async def remove_contact(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    """
+    Видалення контакту за його ID.
+
+    Параметри:
+    - contact_id (int): ID контакту.
+    - db (AsyncSession): Сесія бази даних.
+    - user (User): Поточний авторизований користувач.
+
+    Повертає:
+    - ContactResponse: Дані видаленого контакту.
+
+    Викликає:
+    - HTTPException (404): Якщо контакт не знайдено.
+    """
     contact_service = ContactService(db)
     contact = await contact_service.remove_contact(contact_id, user)
     if contact is None:
