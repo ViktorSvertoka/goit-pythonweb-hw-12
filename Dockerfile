@@ -1,26 +1,23 @@
-# Вибираємо базовий образ
 FROM python:3.13-slim
 
-# Встановлюємо необхідні системні пакети для Poetry та компіляції залежностей
-RUN apt-get update && apt-get install -y gcc curl
+WORKDIR /app
 
-# Встановлюємо Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
+# Оновлення системи та встановлення необхідних залежностей
+RUN apt-get update && apt-get install -y \
+        gcc g++ libc-dev libffi-dev libssl-dev \
+    && pip install poetry \
+    && poetry config virtualenvs.create false
 
-# Додаємо Poetry до PATH
-ENV PATH="/root/.local/bin:$PATH"
+# Копіювання файлів залежностей
+COPY poetry.lock pyproject.toml /app/
 
-# Створюємо та переміщаємося до робочої директорії
-WORKDIR /src
+# Встановлення залежностей
+RUN poetry install --no-dev --no-interaction --no-ansi
 
-# Копіюємо файли проєкту до контейнера
-COPY . /src
+# Копіювання всього коду
+COPY . /app/
 
-# Встановлюємо залежності через Poetry
-RUN poetry install --no-interaction --no-dev
-
-# Відкриваємо порт, який буде використовувати додаток
-EXPOSE 8000
-
-# Запускаємо сервер
+# Команда запуску
 CMD ["python3", "main.py"]
+
+

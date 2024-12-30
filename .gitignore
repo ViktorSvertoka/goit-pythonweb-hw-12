@@ -170,4 +170,4 @@ cython_debug/
 # misc
 .DS_Store
 
-mongo_data
+postgres-data
