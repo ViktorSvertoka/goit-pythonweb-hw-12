@@ -3,7 +3,6 @@ services:
     runtime: python
     name: goit-pythonweb-hw-12
     repo: https://github.com/ViktorSvertoka/goit-pythonweb-hw-12
-    plan: starter
     buildCommand: 'pip install -r requirements.txt'
     startCommand: 'uvicorn main:app --host 0.0.0.0 --port 8000'
     envVars:
