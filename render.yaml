@@ -8,5 +8,5 @@ services:
     envVars:
       - key: ENV
         value: production
-    ports:
-      - port: '8000'
+    expose:
+      - '8000'
