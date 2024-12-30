@@ -8,5 +8,4 @@ services:
     envVars:
       - key: ENV
         value: production
-    ports:
-      - '8000'
+    port: '8000'
